@@ -74,11 +74,11 @@ public class Main {
             switch (menuChoice) {
                 case "1":
                     System.out.println(menuChoices[0]);
-                    subChoice(ownersArray, "ägare");
+                    ownersArray = subChoice(ownersArray, "ägare");
                     break;
                 case "2":
                     System.out.println(menuChoices[1]);
-                    subChoice(employeesArray, "anställd");
+                    employeesArray = subChoice(employeesArray, "anställd");
                     break;
                 case "3":
                     System.out.println(menuChoices[2]);
@@ -137,7 +137,21 @@ public class Main {
     }
 
     private static void printSummary(int[] ownersArray, int[] employeesArray) {
-        System.out.println("printSummary method is not fully implemented yet.");
+        int totalOwnership = 0;
+        for (int i = 0; i < ownersArray.length; i++) {
+            System.out.println("Ägare " + (i + 1) + ": " + ownersArray[i] + "%");
+            totalOwnership += ownersArray[i];
+        }
+
+        System.out.println("Total ägande: " + totalOwnership + "%");
+
+        int totalHourSalaries = 0;
+        for (int i = 0; i < employeesArray.length; i++) {
+            System.out.println("Anställd " + (i + 1) + ": " + employeesArray[i] + "kr/h");
+            totalHourSalaries += employeesArray[i];
+        }
+
+        System.out.println("Totala timkostnad anställda" + totalHourSalaries + "kr/h");
     }
 
     private static void printAll(int[] arrayParam, String elementParam) {
@@ -176,7 +190,7 @@ public class Main {
 
             System.out.println("arrayParam har " + arrayParam.length + " antal index");
 
-            if (arrayParam.length <= 0) {
+            if (arrayParam.length == 0) {
                 int[] insertEmployeeSalary = new int[1];
                 insertEmployeeSalary[0] = salary;
                 arrayParam = insertEmployeeSalary;
@@ -194,7 +208,7 @@ public class Main {
             do {
                 System.out.print("Ange ägarens ägarandel > ");
                 ownership = addNewInput.nextInt();
-                if (ownership > 0 && ownership < 100){
+                if (ownership > 0 && ownership < 100) {
                     break;
                 }
                 System.out.println("Felaktig ägarandel. Det måste vara mer än 0% och mindre än 100%... ");
@@ -222,7 +236,7 @@ public class Main {
         String infoGiveOrTake = giveAwayOwnership ? "ge till" : "ta ifrån";
         boolean updateCompleted = false;
 
-        while(!(wantedOwnership != 0)) {
+        while (!(wantedOwnership != 0)) {
             System.out.println("Det är " + wantedOwnership + " procentenheter som behöver " + giveOrTake + ".");
 
             if (giveAwayOwnership == true) {
@@ -236,9 +250,7 @@ public class Main {
             }
 
             int ownerIndex = updateInput.nextInt();
-            boolean ownerCanGiveAway = false;
 
-            while (!ownerCanGiveAway) {
 
                 do {
                     System.out.println("Ange siffran för vilken ägare du vill " + infoGiveOrTake + " > ");
@@ -252,26 +264,21 @@ public class Main {
                 if (ownerIndex > 0 && ownerIndex <= arrayParam.length) {
                     System.out.println("Felaktigt val. Prova igen ... ");
                 }
-                break;
-            }
+
 
             int correctOwnership = 0;
-            boolean canTakeFromOwner = false;
 
-            while (!canTakeFromOwner) {
-                do {
-                    System.out.println("Hur många procentenheter vill du " + giveOrTake + "ägare " + ownerIndex + "? > ");
-                    correctOwnership = updateInput.nextInt();
-                    if (correctOwnership > wantedOwnership) {
-                        System.out.println("Du kan inte ta mer än " + wantedOwnership + "...");
-                    }
-                } while (correctOwnership > wantedOwnership);
-
-                //if (!(i>0) && i <= wantedOwnership && correctOwnership < arrayParam[ownerIndex -1]) <<<<< Is this the error?
-                if (!(correctOwnership < arrayParam[ownerIndex - 1])) {
-                    System.out.println("Du kan endast ta 1-" + wantedOwnership + " procentenheter från ägaren...");
+            do {
+                System.out.println("Hur många procentenheter vill du " + giveOrTake + "ägare " + ownerIndex + "? > ");
+                correctOwnership = updateInput.nextInt();
+                if (correctOwnership > wantedOwnership) {
+                    System.out.println("Du kan inte ta mer än " + wantedOwnership + "...");
                 }
-                break;
+            } while (correctOwnership > wantedOwnership);
+
+            //if (!(i>0) && i <= wantedOwnership && correctOwnership < arrayParam[ownerIndex -1]) <<<<< Is this the error?
+            if (!(correctOwnership < arrayParam[ownerIndex - 1])) {
+                System.out.println("Du kan endast ta 1-" + wantedOwnership + " procentenheter från ägaren...");
             }
 
             ownerIndex--;
@@ -284,7 +291,7 @@ public class Main {
 
             wantedOwnership -= correctOwnership;
 
-            if (wantedOwnership == 0){
+            if (wantedOwnership == 0) {
                 break;
             }
         }
