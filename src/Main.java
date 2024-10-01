@@ -180,10 +180,9 @@ public class Main {
             do {
                 System.out.print("Ange den anställdes timlön > ");
                 salary = addNewInput.nextInt();
-                if (salary > 0) {
-                    break;
+                if (salary <= 0) {
+                    System.out.println("Timlönen måste vara minst 0kr per timme... ");
                 }
-                System.out.println("Timlönen måste vara minst 0kr per timme... ");
             } while (salary <= 0);
 
             System.out.println("Lönen är " + salary);
@@ -226,8 +225,64 @@ public class Main {
         return arrayParam;
     }
 
-    private static void change(int[] arrayParam, String elementParam) {
-        System.out.println("change method is not fully implemented yet.");
+    private static int[] change(int[] arrayParam, String elementParam) {
+        Scanner changeInput = new Scanner(System.in);
+        System.out.println("Vilken " + elementParam + " vill du ändra på?");
+        printAll(arrayParam, elementParam);
+        int inputNumber = 0;
+        boolean giveAway = true;
+
+        //InputNumber < arrayParam.length e.g. InputNumber must be smaller than array index
+        //InputNumber >= 0 e.g. InputNumber must be bigger or equal to zero
+
+        do {
+            System.out.println("Ange siffran på den du vill ändra på > ");
+            inputNumber = changeInput.nextInt();
+            inputNumber--;
+
+            if (inputNumber >= arrayParam.length || inputNumber < 0) {
+                System.out.println("Ange en giltig siffra... ");
+            }
+
+        } while (arrayParam.length >= inputNumber || inputNumber < 0);
+
+        if (elementParam.equals("ägare")) {
+            int ownership = 0;
+
+            do {
+                System.out.println("Ange ägarens nya ägarandel > ");
+                ownership = changeInput.nextInt();
+                if (ownership < 0 || ownership > 100){
+                    System.out.println("Felaktig ägarandel. Det måste vara mer än 0% men mindre än 100%... ");
+                }
+            } while (ownership < 0 || ownership > 100);
+
+            if (ownership > arrayParam[inputNumber]){
+                ownership -= arrayParam[inputNumber];
+                arrayParam[inputcdNumber] += ownership;
+                giveAway = false;
+            } else {
+                ownership = arrayParam[inputNumber];
+                arrayParam[inputNumber] -= ownership;
+                giveAway = true;
+            }
+
+        } else {
+            int salary = 0;
+
+            do {
+                System.out.println("Ange den anställdes nya timlön > ");
+                salary = changeInput.nextInt();
+                if (salary < 0) {
+                    System.out.println("Felaktig timlön. Det måste vara mer än 0kr/h...");
+                }
+            } while (salary < 0);
+
+            arrayParam[inputNumber] = salary;
+
+        }
+        return arrayParam;
+
     }
 
     private static int[] correctOwnership(int[] arrayParam, int wantedOwnership, boolean giveAwayOwnership) {
