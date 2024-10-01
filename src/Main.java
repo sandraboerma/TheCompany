@@ -237,7 +237,7 @@ public class Main {
         //InputNumber >= 0 e.g. InputNumber must be bigger or equal to zero
 
         do {
-            System.out.println("Ange siffran på den du vill ändra på > ");
+            System.out.print("Ange siffran på den du vill ändra på > ");
             inputNumber = changeInput.nextInt();
             inputNumber--;
 
@@ -245,7 +245,7 @@ public class Main {
                 System.out.println("Ange en giltig siffra... ");
             }
 
-        } while (arrayParam.length >= inputNumber || inputNumber < 0);
+        } while (inputNumber >= arrayParam.length || inputNumber < 0);
 
         if (elementParam.equals("ägare")) {
             int ownership = 0;
@@ -292,7 +292,7 @@ public class Main {
             int salary = 0;
 
             do {
-                System.out.println("Ange den anställdes nya timlön > ");
+                System.out.print("Ange den anställdes nya timlön > ");
                 salary = changeInput.nextInt();
                 if (salary < 0) {
                     System.out.println("Felaktig timlön. Det måste vara mer än 0kr/h...");
@@ -382,7 +382,7 @@ public class Main {
             int correctOwnership;
 
             do {
-                System.out.println("Hur många procentenheter vill du " + giveOrTake + " ägare " + ownerIndex + "? > ");
+                System.out.print("Hur många procentenheter vill du " + giveOrTake + " ägare " + ownerIndex + "? > ");
                 correctOwnership = updateInput.nextInt();
                 if (correctOwnership > wantedOwnership) {
                     System.out.println("Du kan inte ta mer än " + wantedOwnership + "...");
