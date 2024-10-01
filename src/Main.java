@@ -259,7 +259,7 @@ public class Main {
 
             if (ownership > arrayParam[inputNumber]){
                 ownership -= arrayParam[inputNumber];
-                arrayParam[inputcdNumber] += ownership;
+                arrayParam[inputNumber] += ownership;
                 giveAway = false;
             } else {
                 ownership = arrayParam[inputNumber];
@@ -267,6 +267,26 @@ public class Main {
                 giveAway = true;
             }
 
+            int[] tempArray = new int[arrayParam.length - 1];
+
+            for (int i = 0 ; i < arrayParam.length; i++){
+                int j = 0;
+                if (i != inputNumber) {
+                    tempArray[j] = arrayParam [i];
+                    j++;
+                }
+            }
+
+            tempArray = correctOwnership(tempArray, ownership, giveAway);
+
+            for (int i = 0 ; i < arrayParam.length; i++){
+                int j = 0;
+                if (i != inputNumber) {
+                    arrayParam[i] = tempArray[j]
+                    j++;
+                }
+                arrayParam[i] = tempArray[j];
+            }
         } else {
             int salary = 0;
 
