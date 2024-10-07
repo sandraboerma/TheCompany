@@ -3,7 +3,6 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner mainInput = new Scanner(System.in);
-
         String[] menuChoices = {
                 "1. Ägare (visa alla, lägg till, ändra, ta bort).",
                 "2. Anställd (visa alla, lägg till, ändra, ta bort).",
@@ -38,7 +37,6 @@ public class Main {
 
         if (ownersArray.length == 1) {
             ownersArray[0] = 100;
-            System.out.println("Owner is the " + ownersArray.length + " and only och äger " + ownersArray[0] + "%."); // code check
         } else {
             for (i = 0; i < ownersArray.length - 1; i++) {
                 do {
@@ -49,11 +47,11 @@ public class Main {
                 } while (ownership <= 0);
                 ownersArray[i] = ownership;
                 totalOwnerPercentage += ownersArray[i];
-                System.out.println("Current stored index: " + i); //code check
-                System.out.println("Owner " + (i + 1) + " owns " + ownership + "% andel."); //code check
             }
             ownersArray[i] = 100 - totalOwnerPercentage;
-            System.out.println("Owner " + ownersArray.length + " owns " + ownersArray[i] + "% andel."); // code check
+            System.out.println("Ägare " + ownersArray.length +
+                    " blir tilldelad resterande " +
+                    ownersArray[i] + "% ägarandel.");
         }
 
         int[] employeesArray = new int[0];
@@ -113,23 +111,12 @@ public class Main {
             menuSubChoice = subChoicInput.nextLine();
 
             switch (menuSubChoice) {
-                case "1":
-                    printAll(arrayParam, elementParam);
-                    break;
-                case "2":
-                    arrayParam = addNew(arrayParam, elementParam);
-                    break;
-                case "3":
-                    arrayParam = change(arrayParam, elementParam);
-                    break;
-                case "4":
-                    arrayParam = remove(arrayParam, elementParam); // check this more later.
-                    break;
-                case "0":
-                    exitSubMenu = true;
-                    break;
-                default:
-                    System.out.println("Ogiltigt val. Försök igen... ");
+                case "1" -> printAll(arrayParam, elementParam);
+                case "2" -> arrayParam = addNew(arrayParam, elementParam);
+                case "3" -> arrayParam = change(arrayParam, elementParam);
+                case "4" -> arrayParam = remove(arrayParam, elementParam);
+                case "0" -> exitSubMenu = true;
+                default -> System.out.println("Ogiltigt val. Försök igen... ");
             }
         }
         return arrayParam;
@@ -138,20 +125,26 @@ public class Main {
     private static void printSummary(int[] ownersArray, int[] employeesArray) {
         int totalOwnership = 0;
 
+        System.out.println("----------------------------------------------------");
+
         for (int i = 0; i < ownersArray.length; i++) {
             System.out.println("Ägare " + (i + 1) + ": " + ownersArray[i] + "%");
             totalOwnership += ownersArray[i];
         }
-
+        System.out.println("----------------------------------------------------");
         System.out.println("Total ägande: " + totalOwnership + "%");
+        System.out.println("""
+                ----------------------------------------------------\n
+                ----------------------------------------------------""");
 
         int totalHourSalaries = 0;
         for (int i = 0; i < employeesArray.length; i++) {
             System.out.println("Anställd " + (i + 1) + ": " + employeesArray[i] + "kr/h");
             totalHourSalaries += employeesArray[i];
         }
-
-        System.out.println("Totala timkostnad anställda" + totalHourSalaries + "kr/h");
+        System.out.println("----------------------------------------------------");
+        System.out.println("Totala timkostnad anställda " + totalHourSalaries + "kr/h");
+        System.out.println("----------------------------------------------------");
     }
 
     private static void printAll(int[] arrayParam, String elementParam) {
@@ -185,10 +178,6 @@ public class Main {
                 }
             } while (salary <= 0);
 
-            System.out.println("Lönen är " + salary);
-
-            System.out.println("arrayParam har " + arrayParam.length + " antal index");
-
             if (arrayParam.length == 0) {
                 int[] insertEmployeeSalary = new int[1];
                 insertEmployeeSalary[0] = salary;
@@ -201,6 +190,7 @@ public class Main {
                 modifiedEmployeeSalary[arrayParam.length] = salary;
                 arrayParam = modifiedEmployeeSalary;
             }
+
         } else {
             int ownership = 0;
 
@@ -211,11 +201,11 @@ public class Main {
                     break;
                 }
                 System.out.println("Felaktig ägarandel. Det måste vara mer än 0% och mindre än 100%... ");
-            } while (ownership <= 0);
+            } while (ownership <= 0 || ownership > 100);
 
             arrayParam = correctOwnership(arrayParam, ownership, false);
-
             int[] anotherTempArray = new int[arrayParam.length + 1];
+
             for (int i = 0; i < arrayParam.length; i++) {
                 anotherTempArray[i] = arrayParam[i];
             }
@@ -233,25 +223,20 @@ public class Main {
         int inputNumber = 0;
         boolean giveAway = true;
 
-        //InputNumber < arrayParam.length e.g. InputNumber must be smaller than array index
-        //InputNumber >= 0 e.g. InputNumber must be bigger or equal to zero
-
         do {
             System.out.print("Ange siffran på den du vill ändra på > ");
             inputNumber = changeInput.nextInt();
             inputNumber--;
-
             if (inputNumber >= arrayParam.length || inputNumber < 0) {
                 System.out.println("Ange en giltig siffra... ");
             }
-
         } while (inputNumber >= arrayParam.length || inputNumber < 0);
 
         if (elementParam.equals("ägare")) {
             int ownership = 0;
 
             do {
-                System.out.println("Ange ägarens nya ägarandel > ");
+                System.out.print("Ange ägarens nya ägarandel > ");
                 ownership = changeInput.nextInt();
                 if (ownership < 0 || ownership > 100) {
                     System.out.println("Felaktig ägarandel. Det måste vara mer än 0% men mindre än 100%... ");
@@ -263,31 +248,37 @@ public class Main {
                 arrayParam[inputNumber] += ownership;
                 giveAway = false;
             } else {
-                ownership = arrayParam[inputNumber];
+                ownership = (arrayParam[inputNumber] - ownership);
                 arrayParam[inputNumber] -= ownership;
                 giveAway = true;
             }
 
-            int[] tempChangeArray = new int[arrayParam.length - 1];
+            int[] tempArray = new int[arrayParam.length - 1];
+            int i = 0;
+            int j = 0;
 
-            for (int i = 0; i < arrayParam.length; i++) {
-                int j = 0;
-                if (i != inputNumber) {
-                    tempChangeArray[j] = arrayParam[i];
+            do {
+                if (i != inputNumber){
+                    tempArray[j] = arrayParam[i];
                     j++;
                 }
-            }
+                i++;
+            } while (i < arrayParam.length);
 
-            tempChangeArray = correctOwnership(tempChangeArray, ownership, giveAway);
+            tempArray = correctOwnership(tempArray, ownership, giveAway);
+            i = 0;
+            j = 0;
 
-            for (int i = 0; i < arrayParam.length; i++) {
-                int j = 0;
+            while (i < arrayParam.length) {
                 if (i != inputNumber) {
-                    arrayParam[i] = tempChangeArray[j];
+                    arrayParam[i] = tempArray[j];
                     j++;
+                } else {
+                    arrayParam[i] = tempArray[j];
                 }
-                arrayParam[i] = tempChangeArray[j];
+                i++;
             }
+
         } else {
             int salary = 0;
 
@@ -300,15 +291,12 @@ public class Main {
             } while (salary < 0);
 
             arrayParam[inputNumber] = salary;
-
         }
         return arrayParam;
-
     }
 
     private static int[] remove(int[] arrayParam, String elementParam) {
         Scanner removeInput = new Scanner(System.in);
-
         if (arrayParam.length == 1 && elementParam.equals("ägare")) {
             System.out.println("Du kan inte ta bort den enda ägaren i företaget...");
         } else {
@@ -317,24 +305,28 @@ public class Main {
             int inputNumber = -1;
 
             do {
-                System.out.println("Ange siffran på den " + elementParam + " du vill ta bort > ");
+                System.out.print("Ange siffran på den " + elementParam + " du vill ta bort > ");
                 inputNumber = removeInput.nextInt();
                 inputNumber--;
-                if (inputNumber >= arrayParam.length || inputNumber < 0) {
-                    System.out.println("Ange en giltig siffra... ");
+                if (inputNumber < arrayParam.length && inputNumber >= 0) {
+                    break;
                 }
+                System.out.println("Ange en giltig siffra... ");
             } while (inputNumber >= arrayParam.length || inputNumber < 0);
 
-            int[] tempRemoveArray = new int[arrayParam.length - 1];
+            int[] newArray = new int[arrayParam.length - 1];
 
-            for (int sorting : arrayParam) {
-                tempRemoveArray[sorting] = arrayParam[sorting];
+            for (int i = 0; i < arrayParam.length - 1; i++) {
+                if (i != inputNumber) {
+                    newArray[i] = arrayParam[i];
+                }
             }
 
             if (elementParam.equals("ägare")) {
-                return correctOwnership(tempRemoveArray, arrayParam[inputNumber], true);
+                return correctOwnership(newArray, arrayParam[inputNumber], true);
+            } else {
+                return newArray;
             }
-
         }
         return arrayParam;
     }
@@ -343,29 +335,26 @@ public class Main {
         Scanner updateInput = new Scanner(System.in);
         String giveOrTake = giveAwayOwnership ? "fördelas ut" : "tas fram";
         String infoGiveOrTake = giveAwayOwnership ? "ge till" : "ta ifrån";
-        boolean updateCompleted = wantedOwnership != 0;
 
-        while (updateCompleted) {
+        do {
             System.out.println("Det är " + wantedOwnership + " procentenheter som behöver " + giveOrTake + ".");
-
             if (giveAwayOwnership) {
                 System.out.println("Vilken ägare vill du ge ägarandelar till?");
+            } else {
+                System.out.println("Vilken ägare vill du ta ägarandelar av?");
             }
-            System.out.println("Vilken ägare vill du ta ägarandelar av?");
+            int i;
 
-
-            for (int i = 0; i < arrayParam.length; i++) {
+            for (i = 0; i < arrayParam.length; i++) {
                 System.out.println("Ägare " + (i + 1) + ": " + arrayParam[i] + "%.");
             }
 
             int ownerIndex;
 
             while (true) {
-
                 do {
                     System.out.print("Ange siffran för vilken ägare du vill " + infoGiveOrTake + " > ");
                     ownerIndex = updateInput.nextInt();
-
                     if (arrayParam[ownerIndex - 1] == 1 && !giveAwayOwnership) {
                         System.out.println("Ägare " + ownerIndex + " har bara 1% kvar. Du kan inte ta bort det sista... ");
                     }
@@ -374,27 +363,27 @@ public class Main {
                 if (ownerIndex > 0 && ownerIndex <= arrayParam.length) {
                     break;
                 }
-
                 System.out.println("Felaktigt val. Prova igen ... ");
             }
 
-
             int correctOwnership;
 
-            do {
-                System.out.print("Hur många procentenheter vill du " + giveOrTake + " ägare " + ownerIndex + "? > ");
-                correctOwnership = updateInput.nextInt();
-                if (correctOwnership > wantedOwnership) {
-                    System.out.println("Du kan inte ta mer än " + wantedOwnership + "...");
+            while (true) {
+                do {
+                    System.out.print("Hur många procentenheter vill du " + giveOrTake + " ägare " + ownerIndex + "? > ");
+                    correctOwnership = updateInput.nextInt();
+                    if (correctOwnership > wantedOwnership) {
+                        System.out.println("Du kan inte ta mer än " + wantedOwnership + "...");
+                    }
+                } while (correctOwnership > wantedOwnership);
+
+                if (!(i > 0 && i <= wantedOwnership && correctOwnership < arrayParam[ownerIndex - 1])) {
+                    System.out.println("Du kan endast ta 1-" + wantedOwnership + " procentenheter från ägaren...");
+                } else {
+                    ownerIndex--;
+                    break;
                 }
-            } while (correctOwnership > wantedOwnership);
-
-            //if (!(i>0) && i <= wantedOwnership && correctOwnership < arrayParam[ownerIndex -1]) <<<<< Is this the error?
-            if (!(correctOwnership < arrayParam[ownerIndex - 1])) {
-                System.out.println("Du kan endast ta 1-" + wantedOwnership + " procentenheter från ägaren...");
             }
-
-            ownerIndex--;
 
             if (giveAwayOwnership) {
                 arrayParam[ownerIndex] += correctOwnership;
@@ -404,10 +393,7 @@ public class Main {
 
             wantedOwnership -= correctOwnership;
 
-            if (wantedOwnership == 0) {
-                break;
-            }
-        }
+        } while (wantedOwnership != 0);
         return arrayParam;
     }
 }
