@@ -1,8 +1,9 @@
 import java.util.Scanner;
 
 public class Main {
+    private static final Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
-        Scanner mainInput = new Scanner(System.in);
         String[] menuChoices = {
                 "1. Ägare (visa alla, lägg till, ändra, ta bort).",
                 "2. Anställd (visa alla, lägg till, ändra, ta bort).",
@@ -14,17 +15,18 @@ public class Main {
 
         do {
             System.out.print("Ange restaurangens namn > ");
-            restaurantName = mainInput.nextLine();
-            if (restaurantName.length() < 10) {
+            restaurantName = scanner.nextLine().trim();
+            if (restaurantName.length() < 11) {
                 System.out.println("För kort namn. Prova igen... ");
             }
-        } while (restaurantName.length() < 10);
+        } while (restaurantName.length() < 11);
 
         int totalOwners;
 
         do {
             System.out.print("Antal ägare? ");
-            totalOwners = mainInput.nextInt();
+            totalOwners = scanner.nextInt();
+            scanner.nextLine();
             if (totalOwners <= 0) {
                 System.out.println("Det måste finnas minst en ägare... ");
             }
@@ -41,7 +43,8 @@ public class Main {
             for (i = 0; i < ownersArray.length - 1; i++) {
                 do {
                     System.out.print("Ange ägare " + (i + 1) + " ägarandel > ");
-                    ownership = mainInput.nextInt();
+                    ownership = scanner.nextInt();
+                    scanner.nextLine();
                     if (ownership <= 0)
                         System.out.println("En ägare måste äga något... ");
                 } while (ownership <= 0);
@@ -57,7 +60,6 @@ public class Main {
         int[] employeesArray = new int[0];
         boolean exitMainProgram = false;
         String menuChoice;
-        mainInput.nextLine();
 
         System.out.println("Valkommen till " + restaurantName + "! \n");
 
@@ -69,33 +71,21 @@ public class Main {
             }
 
             System.out.print("Ange siffran för menyval > ");
-            menuChoice = mainInput.nextLine();
+            menuChoice = scanner.nextLine().trim();
 
             switch (menuChoice) {
-                case "1":
-                    ownersArray = subChoice(ownersArray, "ägare");
-                    break;
-                case "2":
-                    employeesArray = subChoice(employeesArray, "anställd");
-                    break;
-                case "3":
-                    printSummary(ownersArray, employeesArray);
-                    break;
-                case "0":
-                    System.out.println("Programmet avslutas... ");
-                    exitMainProgram = true;
-                    break;
-                default:
-                    System.out.println("Ogiltigt val. Försök igen... ");
-                    break;
+                case "1" -> ownersArray = subChoice(ownersArray, "ägare");
+                case "2" -> employeesArray = subChoice(employeesArray, "anställd");
+                case "3" -> printSummary(ownersArray, employeesArray);
+                case "0" -> { System.out.println("Programmet avslutas... "); exitMainProgram = true; }
+                default -> System.out.println("Ogiltigt val. Försök igen... ");
             }
         }
     }
 
     public static int[] subChoice(int[] arrayParam, String elementParam) {
-        Scanner subChoicInput = new Scanner(System.in);
         boolean exitSubMenu = false;
-        String menuSubChoice;
+        int menuSubChoice;
 
         while (!exitSubMenu) {
 
@@ -108,14 +98,15 @@ public class Main {
             );
 
             System.out.print("Ange siffran för menyval > ");
-            menuSubChoice = subChoicInput.nextLine();
+            menuSubChoice = scanner.nextInt();
+            scanner.nextLine();
 
             switch (menuSubChoice) {
-                case "1" -> printAll(arrayParam, elementParam);
-                case "2" -> arrayParam = addNew(arrayParam, elementParam);
-                case "3" -> arrayParam = change(arrayParam, elementParam);
-                case "4" -> arrayParam = remove(arrayParam, elementParam);
-                case "0" -> exitSubMenu = true;
+                case 1 -> printAll(arrayParam, elementParam);
+                case 2 -> arrayParam = addNew(arrayParam, elementParam);
+                case 3 -> arrayParam = change(arrayParam, elementParam);
+                case 4 -> arrayParam = remove(arrayParam, elementParam);
+                case 0 -> exitSubMenu = true;
                 default -> System.out.println("Ogiltigt val. Försök igen... ");
             }
         }
@@ -134,7 +125,7 @@ public class Main {
         System.out.println("----------------------------------------------------");
         System.out.println("Total ägande: " + totalOwnership + "%");
         System.out.println("""
-                ----------------------------------------------------\n
+                ----------------------------------------------------
                 ----------------------------------------------------""");
 
         int totalHourSalaries = 0;
@@ -165,14 +156,13 @@ public class Main {
     }
 
     private static int[] addNew(int[] arrayParam, String elementParam) {
-        Scanner addNewInput = new Scanner(System.in);
-
         if (elementParam.equals("anställd")) {
             int salary = 0;
 
             do {
                 System.out.print("Ange den anställdes timlön > ");
-                salary = addNewInput.nextInt();
+                salary = scanner.nextInt();
+                scanner.nextLine();
                 if (salary <= 0) {
                     System.out.println("Timlönen måste vara minst 0kr per timme... ");
                 }
@@ -196,7 +186,8 @@ public class Main {
 
             do {
                 System.out.print("Ange ägarens ägarandel > ");
-                ownership = addNewInput.nextInt();
+                ownership = scanner.nextInt();
+                scanner.nextLine();
                 if (ownership > 0 && ownership < 100) {
                     break;
                 }
@@ -217,7 +208,6 @@ public class Main {
     }
 
     private static int[] change(int[] arrayParam, String elementParam) {
-        Scanner changeInput = new Scanner(System.in);
         System.out.println("Vilken " + elementParam + " vill du ändra på?");
         printAll(arrayParam, elementParam);
         int inputNumber = 0;
@@ -225,7 +215,8 @@ public class Main {
 
         do {
             System.out.print("Ange siffran på den du vill ändra på > ");
-            inputNumber = changeInput.nextInt();
+            inputNumber = scanner.nextInt();
+            scanner.nextLine();
             inputNumber--;
             if (inputNumber >= arrayParam.length || inputNumber < 0) {
                 System.out.println("Ange en giltig siffra... ");
@@ -237,7 +228,8 @@ public class Main {
 
             do {
                 System.out.print("Ange ägarens nya ägarandel > ");
-                ownership = changeInput.nextInt();
+                ownership = scanner.nextInt();
+                scanner.nextLine();
                 if (ownership < 0 || ownership > 100) {
                     System.out.println("Felaktig ägarandel. Det måste vara mer än 0% men mindre än 100%... ");
                 }
@@ -284,7 +276,8 @@ public class Main {
 
             do {
                 System.out.print("Ange den anställdes nya timlön > ");
-                salary = changeInput.nextInt();
+                salary = scanner.nextInt();
+                scanner.nextLine();
                 if (salary < 0) {
                     System.out.println("Felaktig timlön. Det måste vara mer än 0kr/h...");
                 }
@@ -296,7 +289,6 @@ public class Main {
     }
 
     private static int[] remove(int[] arrayParam, String elementParam) {
-        Scanner removeInput = new Scanner(System.in);
         if (arrayParam.length == 1 && elementParam.equals("ägare")) {
             System.out.println("Du kan inte ta bort den enda ägaren i företaget...");
         } else {
@@ -306,20 +298,22 @@ public class Main {
 
             do {
                 System.out.print("Ange siffran på den " + elementParam + " du vill ta bort > ");
-                inputNumber = removeInput.nextInt();
+                inputNumber = scanner.nextInt();
+                scanner.nextLine();
                 inputNumber--;
                 if (inputNumber < arrayParam.length && inputNumber >= 0) {
                     break;
                 }
                 System.out.println("Ange en giltig siffra... ");
-            } while (inputNumber >= arrayParam.length || inputNumber < 0);
+            } while (inputNumber >= arrayParam.length && inputNumber < 0);
+            System.out.println(arrayParam.length + "KOLLA");
 
             int[] newArray = new int[arrayParam.length - 1];
-
             for (int i = 0; i < arrayParam.length - 1; i++) {
-                if (i != inputNumber) {
+                if (i != inputNumber && i < inputNumber) {
                     newArray[i] = arrayParam[i];
                 }
+                newArray[i] = arrayParam[ i + 1 ];
             }
 
             if (elementParam.equals("ägare")) {
@@ -332,7 +326,6 @@ public class Main {
     }
 
     private static int[] correctOwnership(int[] arrayParam, int wantedOwnership, boolean giveAwayOwnership) {
-        Scanner updateInput = new Scanner(System.in);
         String giveOrTake = giveAwayOwnership ? "fördelas ut" : "tas fram";
         String infoGiveOrTake = giveAwayOwnership ? "ge till" : "ta ifrån";
 
@@ -354,7 +347,8 @@ public class Main {
             while (true) {
                 do {
                     System.out.print("Ange siffran för vilken ägare du vill " + infoGiveOrTake + " > ");
-                    ownerIndex = updateInput.nextInt();
+                    ownerIndex = scanner.nextInt();
+                    scanner.nextLine();
                     if (arrayParam[ownerIndex - 1] == 1 && !giveAwayOwnership) {
                         System.out.println("Ägare " + ownerIndex + " har bara 1% kvar. Du kan inte ta bort det sista... ");
                     }
@@ -371,7 +365,8 @@ public class Main {
             while (true) {
                 do {
                     System.out.print("Hur många procentenheter vill du " + giveOrTake + " ägare " + ownerIndex + "? > ");
-                    correctOwnership = updateInput.nextInt();
+                    correctOwnership = scanner.nextInt();
+                    scanner.nextLine();
                     if (correctOwnership > wantedOwnership) {
                         System.out.println("Du kan inte ta mer än " + wantedOwnership + "...");
                     }
